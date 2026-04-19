@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('m_supplier', function (Blueprint $table) {
+        Schema::create('m_supplier', function (Blueprint $table) {
             $table->id('supplier_id'); // primary key
             $table->string('supplier_kode')->unique(); // kode unik supplier
             $table->string('supplier_nama'); // nama supplier
