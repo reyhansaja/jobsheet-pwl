@@ -19,6 +19,8 @@ return new class extends Migration
             $table->integer('harga_beli');
             $table->integer('harga_jual');
             $table->timestamps();
+
+            $table->foreign('kategori_id')->references('kategori_id')->on('m_kategori');
         });
     }
 
@@ -27,8 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('m_barang', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('m_barang');
     }
 };
