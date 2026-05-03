@@ -13,6 +13,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use App\Models\Category;
+use App\Models\Tag;
 
 class PostForm
 {
@@ -42,12 +44,13 @@ class PostForm
                                     'unique' => 'Slug harus unik.',
                                 ]),
                             Select::make('category_id')
-                                ->relationship('category', 'name')
+                                ->relationship("category", "name")
+                                ->options(Category::all()->pluck("name", "id"))
                                 ->required()
                                 ->validationMessages([
                                     'required' => 'Category wajib dipilih.',
                                 ])
-                                ->preload()
+                                //->preload()
                                 ->searchable(),
                             ColorPicker::make('color'),
                         ])->columns(2),
@@ -71,7 +74,11 @@ class PostForm
                     // section 3 - meta
                     Section::make('Meta Information')
                         ->schema([
-                            TagsInput::make('tags'),
+                            Select::make('tags')
+                                ->relationship("tags", "name")
+                                ->multiple()
+                                ->preload(),
+                            // TagsInput::make('tags'),
                             Checkbox::make('published'),
                             DateTimePicker::make('published_at'),
                         ]),

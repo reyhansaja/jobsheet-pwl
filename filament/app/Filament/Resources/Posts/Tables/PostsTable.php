@@ -4,8 +4,12 @@ namespace App\Filament\Resources\Posts\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ReplicateAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\Action;
 use Filament\Tables\Table;
+use Filament\Forms\Components\Checkbox;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\ColorColumn;
@@ -47,7 +51,7 @@ class PostsTable
                 ->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('published')
                 ->boolean(),
-            ])->defaultSort('created_at', 'asc')
+            ])->defaultSort('created_at', 'desc')
             ->filters([
                 Filter::make('created_at')
                     ->label('Created At')
@@ -68,7 +72,21 @@ class PostsTable
                     ->preload(),
             ])
             ->recordActions([
+                ReplicateAction::make(),
                 EditAction::make(),
+                DeleteAction::make(),
+                Action::make('status')
+                    ->label('Status Changed')
+                    ->icon('heroicon-o-check-circle')
+                    ->schema([
+                        Checkbox::make('published')
+                            ->default(fn ($record): bool => $record->published),
+                    ])
+                    ->action(function ($record, $data) {
+                        $record->update([
+                            'published' => $data['published'],
+                        ]);
+                    })
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
